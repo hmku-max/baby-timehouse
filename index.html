@@ -416,17 +416,50 @@ let babyName='', babyDob=null;
 let photos=[], milestones=[], growthLogs=[];
 let currentPhotoId=null, selectedPdfStyle='1x1';
 
+function saveToLocal(){
+  try{
+    const data={babyName,babyDob:babyDob?babyDob.toISOString():null,milestones:milestones.map(m=>({...m,date:m.date.toISOString()})),growthLogs:growthLogs.map(g=>({...g,date:g.date.toISOString()})),photos:photos.map(p=>({...p,date:p.date.toISOString()}))};
+    localStorage.setItem('babyTimehouse',JSON.stringify(data));
+  }catch(e){console.warn('儲存失敗',e);}
+}
+
+function loadFromLocal(){
+  try{
+    const raw=localStorage.getItem('babyTimehouse');
+    if(!raw) return false;
+    const data=JSON.parse(raw);
+    babyName=data.babyName||'';
+    babyDob=data.babyDob?new Date(data.babyDob):null;
+    photos=(data.photos||[]).map(p=>({...p,date:new Date(p.date)}));
+    milestones=(data.milestones||[]).map(m=>({...m,date:new Date(m.date)}));
+    growthLogs=(data.growthLogs||[]).map(g=>({...g,date:new Date(g.date)}));
+    return !!babyName&&!!babyDob;
+  }catch(e){return false;}
+}
+
 // ── SETUP ──
 function startApp(){
   const n=document.getElementById('setup-name').value.trim();
   const d=document.getElementById('setup-dob').value;
   if(!n||!d){alert('請輸入寶寶名字和生日！');return;}
   babyName=n; babyDob=new Date(d);
+  saveToLocal();
   document.getElementById('setup-screen').style.display='none';
   document.getElementById('app').style.display='block';
   updateHeader();
   gtag('event','app_start',{baby_name:n});
 }
+
+window.addEventListener('DOMContentLoaded',()=>{
+  if(loadFromLocal()){
+    document.getElementById('setup-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    updateHeader();
+    renderUploadGrid();
+    renderMilestones();
+    renderGrowthLog();
+  }
+});
 
 function getAge(date){
   if(!babyDob) return '';
@@ -489,6 +522,7 @@ async function handleFiles(e){
     if(approved){
       dot.className='dot pass'; txt.textContent=file.name+' — ✅ 寶寶照片！';
       photos.push({id,src,date:photoDate,age:getAge(photoDate),tag:'',note:'',approved:true});
+      saveToLocal();
       renderUploadGrid();
       gtag('event','photo_uploaded',{approved:true});
     }else{
@@ -543,15 +577,10 @@ function savePhotoMeta(){
   const p=photos.find(x=>x.id===currentPhotoId);
   p.tag=document.getElementById('modal-tag').value.trim();
   p.note=document.getElementById('modal-note').value.trim();
+  saveToLocal();
   closeModal();renderUploadGrid();renderTimeline();
 }
 
-function openMilestoneAdd(){
-  document.getElementById('ms-emoji').value='';
-  document.getElementById('ms-title').value='';
-  document.getElementById('ms-date').value=new Date().toISOString().split('T')[0];
-  document.getElementById('milestone-modal').classList.add('open');
-}
 function saveMilestone(){
   const e=document.getElementById('ms-emoji').value.trim()||'⭐';
   const t=document.getElementById('ms-title').value.trim();
@@ -560,15 +589,10 @@ function saveMilestone(){
   const date=new Date(d);
   milestones.push({emoji:e,title:t,date,age:getAge(date)});
   milestones.sort((a,b)=>a.date-b.date);
+  saveToLocal();
   document.getElementById('milestone-modal').classList.remove('open');
   renderMilestones();
   gtag('event','milestone_added',{title:t});
-}
-function renderMilestones(){
-  const el=document.getElementById('milestone-list');
-  if(!milestones.length){el.innerHTML='<div class="empty-msg"><div class="em-icon">⭐</div>記錄寶寶的第一次！</div>';return;}
-  el.innerHTML='';
-  milestones.forEach(m=>{const c=document.createElement('div');c.className='milestone-card';c.innerHTML=`<div class="milestone-emoji">${m.emoji}</div><div><div class="milestone-title">${m.title}</div><div class="milestone-date">${m.date.toLocaleDateString('zh-TW')}${m.age?'・'+m.age:''}</div></div>`;el.appendChild(c);});
 }
 
 function addGrowthLog(){
@@ -577,24 +601,10 @@ function addGrowthLog(){
   if(!h&&!w){alert('請輸入身高或體重！');return;}
   growthLogs.push({date:new Date(),height:h||null,weight:w||null});
   document.getElementById('g-height').value='';document.getElementById('g-weight').value='';
+  saveToLocal();
   renderGrowthLog();
 }
-function renderGrowthLog(){
-  const el=document.getElementById('growth-log');el.innerHTML='';
-  growthLogs.slice().reverse().forEach(log=>{
-    const c=document.createElement('div');
-    c.style.cssText='background:rgba(255,255,255,0.7);border-radius:14px;padding:0.8rem 1rem;border:1.5px solid rgba(180,140,240,0.2);display:flex;justify-content:space-between;align-items:center;';
-    c.innerHTML=`<div style="font-size:0.8rem;color:#b0a0cc;">${log.date.toLocaleDateString('zh-TW')}</div><div style="display:flex;gap:16px;">${log.height?`<span style="color:#9b6dce;font-weight:700;">📏 ${log.height} cm</span>`:''}${log.weight?`<span style="color:#6ba8e0;font-weight:700;">⚖️ ${log.weight} kg</span>`:''}</div>`;
-    el.appendChild(c);
-  });
-  if(!growthLogs.length) el.innerHTML='<div class="empty-msg"><div class="em-icon">📏</div>還沒有記錄</div>';
-}
 
-function showSettings(){
-  document.getElementById('s-name').value=babyName;
-  document.getElementById('s-dob').value=babyDob?babyDob.toISOString().split('T')[0]:'';
-  document.getElementById('settings-modal').classList.add('open');
-}
 function saveSettings(){
   const n=document.getElementById('s-name').value.trim();
   const d=document.getElementById('s-dob').value;
@@ -602,6 +612,7 @@ function saveSettings(){
   babyName=n;babyDob=new Date(d);
   photos.forEach(p=>{p.age=getAge(p.date);});
   milestones.forEach(m=>{m.age=getAge(m.date);});
+  saveToLocal();
   document.getElementById('settings-modal').classList.remove('open');
   updateHeader();renderUploadGrid();renderTimeline();renderMilestones();
 }
