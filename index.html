@@ -3,243 +3,110 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="寶寶時光小屋">
 <title>寶寶時光小屋</title>
-<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-X1M1NEZYDM"></script>
 <script>
-window.dataLayer = window.dataLayer || [];
+window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-X1M1NEZYDM');
+gtag('js',new Date());gtag('config','G-X1M1NEZYDM');
 </script>
-<!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  background: linear-gradient(135deg, #f0e6ff 0%, #e6f0ff 50%, #ffe6f5 100%);
-  min-height: 100vh; color: #3a3a5c;
-}
-#setup-screen {
-  display: flex; align-items: center; justify-content: center;
-  min-height: 100vh; padding: 2rem;
-}
-.setup-card {
-  background: rgba(255,255,255,0.88); border-radius: 28px;
-  padding: 2.5rem 2rem; max-width: 420px; width: 100%;
-  box-shadow: 0 8px 40px rgba(160,120,220,0.18); text-align: center;
-}
-.setup-logo { font-size: 3.2rem; margin-bottom: 0.5rem; }
-.setup-title { font-size: 1.5rem; font-weight: 700; color: #9b6dce; margin-bottom: 0.3rem; }
-.setup-sub { font-size: 0.9rem; color: #a08ec0; margin-bottom: 2rem; }
-.setup-card label { display: block; text-align: left; font-size: 0.85rem; color: #7a5fa0; font-weight: 600; margin-bottom: 0.4rem; margin-top: 1.2rem; }
-.setup-card input {
-  width: 100%; padding: 0.65rem 1rem; border: 2px solid #d9c8f0;
-  border-radius: 14px; font-size: 1rem; color: #3a3a5c;
-  background: #faf7ff; outline: none; transition: border-color 0.2s;
-}
-.setup-card input:focus { border-color: #9b6dce; }
-.btn-start {
-  margin-top: 2rem; width: 100%; padding: 0.8rem; border: none; border-radius: 16px;
-  background: linear-gradient(90deg, #c9a3f0, #92b8ff);
-  color: white; font-size: 1.05rem; font-weight: 700;
-  cursor: pointer; letter-spacing: 1px; transition: opacity 0.2s;
-}
-.btn-start:hover { opacity: 0.9; }
-#app { display: none; }
-.app-header {
-  background: rgba(255,255,255,0.75); backdrop-filter: blur(12px);
-  padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid rgba(180,140,240,0.2);
-  position: sticky; top: 0; z-index: 100;
-}
-.header-left { display: flex; align-items: center; gap: 10px; }
-.header-avatar {
-  width: 44px; height: 44px; border-radius: 50%;
-  background: linear-gradient(135deg, #d9a8f5, #9ec4ff);
-  display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
-}
-.header-name { font-size: 1.05rem; font-weight: 700; color: #7a50b0; }
-.header-age { font-size: 0.8rem; color: #a090c0; }
-.header-right { display: flex; gap: 8px; align-items: center; }
-.btn-hdr {
-  background: rgba(180,140,240,0.15); border: none; border-radius: 10px;
-  padding: 0.5rem 0.9rem; color: #9b6dce; cursor: pointer; font-size: 0.82rem; font-weight: 600;
-  transition: background 0.15s;
-}
-.btn-hdr:hover { background: rgba(180,140,240,0.28); }
-.btn-pdf {
-  background: linear-gradient(90deg, #c9a3f0, #92b8ff); border: none; border-radius: 10px;
-  padding: 0.5rem 1rem; color: white; cursor: pointer; font-size: 0.82rem; font-weight: 700;
-}
-.app-nav {
-  display: flex; background: rgba(255,255,255,0.6);
-  border-bottom: 1px solid rgba(180,140,240,0.15); padding: 0 1rem;
-}
-.nav-btn {
-  flex: 1; padding: 0.75rem 0.5rem; border: none; background: none;
-  font-size: 0.82rem; font-weight: 600; color: #b0a0cc; cursor: pointer;
-  border-bottom: 3px solid transparent; transition: all 0.2s;
-}
-.nav-btn.active { color: #9b6dce; border-bottom-color: #9b6dce; }
-.page { display: none; padding: 1.5rem; max-width: 860px; margin: 0 auto; }
-.page.active { display: block; }
-.upload-zone {
-  border: 2.5px dashed #c8aff0; border-radius: 20px; padding: 2.5rem 1rem;
-  text-align: center; background: rgba(255,255,255,0.5); cursor: pointer;
-  transition: background 0.2s; margin-bottom: 1.5rem;
-}
-.upload-zone:hover { background: rgba(255,255,255,0.75); }
-.upload-icon { font-size: 2.8rem; margin-bottom: 0.5rem; }
-.upload-text { color: #9b6dce; font-weight: 600; font-size: 1rem; }
-.upload-sub { font-size: 0.8rem; color: #b0a0cc; margin-top: 0.3rem; }
-#file-input { display: none; }
-.ai-status {
-  background: rgba(255,255,255,0.7); border-radius: 14px;
-  padding: 1rem 1.2rem; margin-bottom: 1.5rem;
-  border: 1px solid rgba(180,140,240,0.25);
-  font-size: 0.88rem; color: #7a5fa0; display: none;
-}
-.ai-status .status-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
-.dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.dot.pending { background: #d9c8f0; }
-.dot.analyzing { background: #f0c060; animation: pulse 0.8s infinite; }
-.dot.pass { background: #7dd98a; }
-.dot.fail { background: #f09090; }
-@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
-.photo-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 12px; margin-top: 1rem;
-}
-.photo-card {
-  background: white; border-radius: 16px; overflow: hidden;
-  box-shadow: 0 3px 14px rgba(160,120,220,0.15);
-  cursor: pointer; transition: transform 0.2s; position: relative;
-}
-.photo-card:hover { transform: scale(1.03); }
-.photo-card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
-.photo-card-info { padding: 6px 8px 8px; }
-.photo-card-age { font-size: 0.72rem; color: #9b6dce; font-weight: 600; }
-.photo-card-date { font-size: 0.68rem; color: #b0a0cc; }
-.photo-card-tag {
-  position: absolute; top: 6px; right: 6px;
-  background: rgba(155,109,206,0.85); color: white;
-  font-size: 0.65rem; border-radius: 8px; padding: 2px 7px;
-}
-.month-group { margin-bottom: 2rem; }
-.month-label {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: linear-gradient(90deg, #d9c0f5, #a8c8ff);
-  color: white; font-weight: 700; font-size: 0.85rem;
-  border-radius: 12px; padding: 0.4rem 1rem; margin-bottom: 1rem;
-}
-.milestone-card {
-  background: rgba(255,255,255,0.8); border-radius: 18px;
-  padding: 1rem 1.2rem; margin-bottom: 1rem;
-  border: 1.5px solid rgba(180,140,240,0.3);
-  display: flex; align-items: center; gap: 12px;
-}
-.milestone-emoji { font-size: 2rem; }
-.milestone-title { font-weight: 700; color: #7a50b0; font-size: 0.95rem; }
-.milestone-date { font-size: 0.78rem; color: #b0a0cc; margin-top: 2px; }
-.btn-add-milestone {
-  border: 2px dashed #c8aff0; background: none; border-radius: 16px;
-  width: 100%; padding: 0.9rem; color: #9b6dce; font-size: 0.9rem;
-  font-weight: 600; cursor: pointer;
-}
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(80,60,120,0.45); z-index: 200;
-  align-items: center; justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: white; border-radius: 24px; padding: 2rem;
-  max-width: 360px; width: 90%; text-align: center;
-  max-height: 90vh; overflow-y: auto;
-}
-.modal img { width: 100%; border-radius: 14px; margin-bottom: 1rem; object-fit: cover; max-height: 260px; }
-.modal-age { color: #9b6dce; font-weight: 700; font-size: 1rem; margin-bottom: 0.3rem; }
-.modal-date { color: #b0a0cc; font-size: 0.82rem; margin-bottom: 1rem; }
-.modal input, .modal textarea {
-  width: 100%; padding: 0.6rem 0.9rem; border: 1.5px solid #d9c8f0;
-  border-radius: 12px; font-size: 0.9rem; color: #3a3a5c;
-  background: #faf7ff; outline: none; margin-bottom: 0.7rem;
-  resize: none; font-family: inherit;
-}
-.modal input:focus, .modal textarea:focus { border-color: #9b6dce; }
-.modal-btns { display: flex; gap: 8px; }
-.btn-save {
-  flex: 1; padding: 0.65rem; border: none; border-radius: 12px;
-  background: linear-gradient(90deg, #c9a3f0, #92b8ff);
-  color: white; font-weight: 700; cursor: pointer; font-size: 0.9rem;
-}
-.btn-close-modal {
-  padding: 0.65rem 1rem; border: 1.5px solid #d9c8f0;
-  border-radius: 12px; background: none; color: #9b6dce;
-  font-weight: 600; cursor: pointer; font-size: 0.9rem;
-}
-.stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
-.stat-card {
-  background: rgba(255,255,255,0.75); border-radius: 18px; padding: 1rem; text-align: center;
-  border: 1.5px solid rgba(180,140,240,0.2);
-}
-.stat-label { font-size: 0.78rem; color: #b0a0cc; margin-bottom: 4px; }
-.stat-val { font-size: 1.6rem; font-weight: 700; color: #9b6dce; }
-.stat-unit { font-size: 0.8rem; color: #b0a0cc; }
-.section-title {
-  font-size: 1rem; font-weight: 700; color: #7a50b0;
-  margin-bottom: 1rem; display: flex; align-items: center; gap: 6px;
-}
-.api-bar {
-  background: rgba(255,255,255,0.6); border-radius: 14px;
-  padding: 0.75rem 1rem; margin-bottom: 0.5rem;
-  display: flex; gap: 8px; align-items: center;
-  border: 1px solid rgba(180,140,240,0.25);
-}
-.api-bar input {
-  flex: 1; border: 1.5px solid #d9c8f0; border-radius: 10px;
-  padding: 0.45rem 0.8rem; font-size: 0.82rem; color: #3a3a5c;
-  background: #faf7ff; outline: none;
-}
-.api-bar input:focus { border-color: #9b6dce; }
-.api-bar label { font-size: 0.8rem; color: #9b6dce; font-weight: 600; white-space: nowrap; }
-.api-hint { font-size: 0.72rem; color: #b0a0cc; margin-bottom: 1rem; padding: 0 0.5rem; }
-.empty-msg { text-align: center; padding: 3rem 1rem; color: #b0a0cc; font-size: 0.9rem; }
-.empty-msg .em-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
-
-/* PDF progress overlay */
-#pdf-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(80,60,120,0.55); z-index: 300;
-  align-items: center; justify-content: center;
-}
-#pdf-overlay.show { display: flex; }
-.pdf-box {
-  background: white; border-radius: 24px; padding: 2.5rem 2rem;
-  text-align: center; min-width: 280px;
-}
-.pdf-title { font-size: 1.1rem; font-weight: 700; color: #9b6dce; margin-bottom: 0.5rem; }
-.pdf-sub { font-size: 0.85rem; color: #b0a0cc; margin-bottom: 1.5rem; }
-.pdf-bar-wrap { background: #ede8ff; border-radius: 20px; height: 10px; overflow: hidden; }
-.pdf-bar { height: 100%; background: linear-gradient(90deg, #c9a3f0, #92b8ff); border-radius: 20px; width: 0%; transition: width 0.3s; }
-.pdf-count { font-size: 0.8rem; color: #b0a0cc; margin-top: 0.7rem; }
-
-/* PDF style selector */
-.pdf-style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1.2rem; }
-.pdf-style-btn {
-  border: 2px solid #d9c8f0; border-radius: 14px; padding: 0.8rem 0.5rem;
-  background: #faf7ff; cursor: pointer; transition: all 0.15s;
-  color: #7a50b0; font-size: 0.82rem; font-weight: 600;
-}
-.pdf-style-btn.selected { border-color: #9b6dce; background: #f0e8ff; }
-.pdf-style-btn .ps-icon { font-size: 1.5rem; display: block; margin-bottom: 4px; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;background:linear-gradient(135deg,#f0e6ff 0%,#e6f0ff 50%,#ffe6f5 100%);min-height:100vh;color:#3a3a5c;}
+#setup-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1.5rem;}
+.setup-card{background:rgba(255,255,255,0.92);border-radius:28px;padding:2.5rem 1.8rem;max-width:400px;width:100%;box-shadow:0 8px 40px rgba(160,120,220,0.18);text-align:center;}
+.setup-logo{font-size:3.5rem;margin-bottom:0.5rem;}
+.setup-title{font-size:1.5rem;font-weight:700;color:#9b6dce;margin-bottom:0.3rem;}
+.setup-sub{font-size:0.88rem;color:#a08ec0;margin-bottom:2rem;}
+.setup-card label{display:block;text-align:left;font-size:0.85rem;color:#7a5fa0;font-weight:600;margin-bottom:0.4rem;margin-top:1.1rem;}
+.setup-card input{width:100%;padding:0.7rem 1rem;border:2px solid #d9c8f0;border-radius:14px;font-size:1rem;color:#3a3a5c;background:#faf7ff;outline:none;-webkit-appearance:none;}
+.setup-card input:focus{border-color:#9b6dce;}
+.btn-start{margin-top:2rem;width:100%;padding:0.85rem;border:none;border-radius:16px;background:linear-gradient(90deg,#c9a3f0,#92b8ff);color:white;font-size:1.05rem;font-weight:700;cursor:pointer;letter-spacing:1px;}
+#app{display:none;}
+.app-header{background:rgba(255,255,255,0.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:0.85rem 1.2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(180,140,240,0.2);position:sticky;top:0;z-index:100;}
+.header-left{display:flex;align-items:center;gap:10px;}
+.header-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#d9a8f5,#9ec4ff);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.header-name{font-size:0.95rem;font-weight:700;color:#7a50b0;line-height:1.2;}
+.header-age{font-size:0.75rem;color:#a090c0;}
+.header-right{display:flex;gap:6px;align-items:center;}
+.btn-hdr{background:rgba(180,140,240,0.15);border:none;border-radius:10px;padding:0.45rem 0.75rem;color:#9b6dce;cursor:pointer;font-size:0.78rem;font-weight:600;white-space:nowrap;}
+.btn-pdf{background:linear-gradient(90deg,#c9a3f0,#92b8ff);border:none;border-radius:10px;padding:0.45rem 0.85rem;color:white;cursor:pointer;font-size:0.78rem;font-weight:700;white-space:nowrap;}
+.app-nav{display:flex;background:rgba(255,255,255,0.65);border-bottom:1px solid rgba(180,140,240,0.15);}
+.nav-btn{flex:1;padding:0.7rem 0.2rem;border:none;background:none;font-size:0.75rem;font-weight:600;color:#b0a0cc;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;}
+.nav-btn.active{color:#9b6dce;border-bottom-color:#9b6dce;}
+.page{display:none;padding:1.2rem;max-width:860px;margin:0 auto;}
+.page.active{display:block;}
+.upload-zone{border:2.5px dashed #c8aff0;border-radius:20px;padding:2rem 1rem;text-align:center;background:rgba(255,255,255,0.5);cursor:pointer;margin-bottom:1.2rem;}
+.upload-icon{font-size:2.5rem;margin-bottom:0.4rem;}
+.upload-text{color:#9b6dce;font-weight:600;font-size:0.95rem;}
+.upload-sub{font-size:0.78rem;color:#b0a0cc;margin-top:0.3rem;}
+#file-input{display:none;}
+.ai-status{background:rgba(255,255,255,0.7);border-radius:14px;padding:0.9rem 1.1rem;margin-bottom:1.2rem;border:1px solid rgba(180,140,240,0.25);font-size:0.85rem;color:#7a5fa0;display:none;}
+.status-row{display:flex;align-items:center;gap:8px;margin:4px 0;}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot.analyzing{background:#f0c060;animation:pulse 0.8s infinite;}
+.dot.pass{background:#7dd98a;}
+.dot.fail{background:#f09090;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-top:0.8rem;}
+.photo-card{background:white;border-radius:14px;overflow:hidden;box-shadow:0 3px 12px rgba(160,120,220,0.13);cursor:pointer;position:relative;}
+.photo-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
+.photo-card-info{padding:5px 7px 7px;}
+.photo-card-age{font-size:0.68rem;color:#9b6dce;font-weight:600;}
+.photo-card-date{font-size:0.62rem;color:#b0a0cc;}
+.photo-card-tag{position:absolute;top:5px;right:5px;background:rgba(155,109,206,0.85);color:white;font-size:0.6rem;border-radius:7px;padding:2px 6px;}
+.month-group{margin-bottom:1.8rem;}
+.month-label{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(90deg,#d9c0f5,#a8c8ff);color:white;font-weight:700;font-size:0.82rem;border-radius:11px;padding:0.35rem 0.9rem;margin-bottom:0.8rem;}
+.milestone-card{background:rgba(255,255,255,0.8);border-radius:16px;padding:0.9rem 1.1rem;margin-bottom:0.9rem;border:1.5px solid rgba(180,140,240,0.3);display:flex;align-items:center;gap:10px;}
+.milestone-emoji{font-size:1.8rem;}
+.milestone-title{font-weight:700;color:#7a50b0;font-size:0.9rem;}
+.milestone-date{font-size:0.74rem;color:#b0a0cc;margin-top:2px;}
+.btn-add-milestone{border:2px dashed #c8aff0;background:none;border-radius:14px;width:100%;padding:0.85rem;color:#9b6dce;font-size:0.88rem;font-weight:600;cursor:pointer;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(80,60,120,0.45);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:22px;padding:1.5rem;max-width:340px;width:100%;text-align:center;max-height:88vh;overflow-y:auto;}
+.modal img{width:100%;border-radius:12px;margin-bottom:0.8rem;object-fit:cover;max-height:240px;}
+.modal-age{color:#9b6dce;font-weight:700;font-size:0.95rem;margin-bottom:0.2rem;}
+.modal-date{color:#b0a0cc;font-size:0.78rem;margin-bottom:0.8rem;}
+.modal input,.modal textarea{width:100%;padding:0.6rem 0.85rem;border:1.5px solid #d9c8f0;border-radius:11px;font-size:0.9rem;color:#3a3a5c;background:#faf7ff;outline:none;margin-bottom:0.65rem;resize:none;font-family:inherit;-webkit-appearance:none;}
+.modal-btns{display:flex;gap:8px;}
+.btn-save{flex:1;padding:0.65rem;border:none;border-radius:11px;background:linear-gradient(90deg,#c9a3f0,#92b8ff);color:white;font-weight:700;cursor:pointer;font-size:0.88rem;}
+.btn-close-modal{padding:0.65rem 0.9rem;border:1.5px solid #d9c8f0;border-radius:11px;background:none;color:#9b6dce;font-weight:600;cursor:pointer;font-size:0.88rem;}
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.2rem;}
+.stat-card{background:rgba(255,255,255,0.75);border-radius:16px;padding:0.9rem;text-align:center;border:1.5px solid rgba(180,140,240,0.2);}
+.stat-label{font-size:0.75rem;color:#b0a0cc;margin-bottom:4px;}
+.stat-val{font-size:1.5rem;font-weight:700;color:#9b6dce;}
+.stat-unit{font-size:0.75rem;color:#b0a0cc;}
+.section-title{font-size:0.95rem;font-weight:700;color:#7a50b0;margin-bottom:0.9rem;}
+.api-bar{background:rgba(255,255,255,0.6);border-radius:13px;padding:0.7rem 1rem;margin-bottom:0.4rem;display:flex;gap:8px;align-items:center;border:1px solid rgba(180,140,240,0.25);}
+.api-bar input{flex:1;border:1.5px solid #d9c8f0;border-radius:9px;padding:0.4rem 0.75rem;font-size:0.8rem;color:#3a3a5c;background:#faf7ff;outline:none;-webkit-appearance:none;}
+.api-bar label{font-size:0.78rem;color:#9b6dce;font-weight:600;white-space:nowrap;}
+.api-hint{font-size:0.7rem;color:#b0a0cc;margin-bottom:1rem;padding:0 0.3rem;}
+.empty-msg{text-align:center;padding:2.5rem 1rem;color:#b0a0cc;font-size:0.88rem;}
+.em-icon{font-size:2.2rem;margin-bottom:0.5rem;}
+#pdf-overlay{display:none;position:fixed;inset:0;background:rgba(80,60,120,0.55);z-index:300;align-items:center;justify-content:center;padding:1rem;}
+#pdf-overlay.show{display:flex;}
+.pdf-box{background:white;border-radius:22px;padding:2rem 1.5rem;text-align:center;min-width:260px;width:90%;max-width:320px;}
+.pdf-title{font-size:1.05rem;font-weight:700;color:#9b6dce;margin-bottom:0.4rem;}
+.pdf-sub{font-size:0.82rem;color:#b0a0cc;margin-bottom:1.2rem;}
+.pdf-bar-wrap{background:#ede8ff;border-radius:20px;height:10px;overflow:hidden;}
+.pdf-bar{height:100%;background:linear-gradient(90deg,#c9a3f0,#92b8ff);border-radius:20px;width:0%;transition:width 0.3s;}
+.pdf-count{font-size:0.78rem;color:#b0a0cc;margin-top:0.6rem;}
+.pdf-style-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.1rem;}
+.pdf-style-btn{border:2px solid #d9c8f0;border-radius:13px;padding:0.75rem 0.4rem;background:#faf7ff;cursor:pointer;color:#7a50b0;font-size:0.78rem;font-weight:600;}
+.pdf-style-btn.selected{border-color:#9b6dce;background:#f0e8ff;}
+.ps-icon{font-size:1.4rem;display:block;margin-bottom:3px;}
+.storage-bar{background:rgba(255,255,255,0.6);border-radius:12px;padding:0.65rem 1rem;margin-bottom:1rem;font-size:0.75rem;color:#b0a0cc;border:1px solid rgba(180,140,240,0.2);}
+.storage-fill{height:6px;border-radius:10px;background:linear-gradient(90deg,#c9a3f0,#92b8ff);margin-top:5px;transition:width 0.4s;}
+.btn-danger{background:none;border:1.5px solid #f09090;border-radius:11px;padding:0.5rem 1rem;color:#d06060;font-size:0.82rem;cursor:pointer;margin-top:0.8rem;width:100%;}
 </style>
 </head>
 <body>
 
-<!-- SETUP -->
 <div id="setup-screen">
   <div class="setup-card">
     <div class="setup-logo">🌸</div>
@@ -253,19 +120,18 @@ body {
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <div class="app-header">
     <div class="header-left">
       <div class="header-avatar">🌸</div>
       <div>
         <div class="header-name" id="h-name">小寶貝</div>
-        <div class="header-age" id="h-age">計算中…</div>
+        <div class="header-age" id="h-age"></div>
       </div>
     </div>
     <div class="header-right">
-      <button class="btn-pdf" onclick="openPdfModal()">📖 匯出相冊</button>
-      <button class="btn-hdr" onclick="showSettings()">⚙ 設定</button>
+      <button class="btn-pdf" onclick="openPdfModal()">📖 相冊</button>
+      <button class="btn-hdr" onclick="showSettings()">⚙</button>
     </div>
   </div>
 
@@ -276,40 +142,40 @@ body {
     <button class="nav-btn" onclick="switchPage('growth',this)">📊 成長</button>
   </div>
 
-  <!-- UPLOAD -->
   <div class="page active" id="page-upload">
     <div class="api-bar">
-      <label>API Key</label>
-      <input type="password" id="api-key-input" placeholder="sk-ant-…（用於 AI 辨識寶寶照片）">
+      <label>AI Key</label>
+      <input type="password" id="api-key-input" placeholder="sk-ant-…（選填）">
     </div>
-    <div class="api-hint">🔒 API Key 僅在本地使用，不會上傳至任何伺服器</div>
+    <div class="api-hint">🔒 不填也可使用，照片全部直接收錄</div>
+    <div id="storage-info" class="storage-bar">
+      📦 儲存空間：計算中…
+      <div class="storage-fill" id="storage-fill" style="width:0%"></div>
+    </div>
     <div class="upload-zone" onclick="document.getElementById('file-input').click()">
       <div class="upload-icon">🖼️</div>
       <div class="upload-text">點擊選取照片</div>
-      <div class="upload-sub">支援批次上傳，AI 自動篩選寶寶照片</div>
+      <div class="upload-sub">可從相簿批次選取，AI 自動篩選寶寶照片</div>
     </div>
     <input type="file" id="file-input" accept="image/*" multiple onchange="handleFiles(event)">
     <div id="ai-status-box" class="ai-status"></div>
-    <div class="section-title">✅ 已篩選的寶寶照片</div>
+    <div class="section-title">✅ 已儲存的寶寶照片 <span id="photo-count" style="font-weight:400;color:#b0a0cc;font-size:0.82rem;"></span></div>
     <div id="upload-grid" class="photo-grid">
-      <div class="empty-msg" style="grid-column:1/-1"><div class="em-icon">📂</div>上傳照片後，AI 會自動辨識寶寶照片</div>
+      <div class="empty-msg" style="grid-column:1/-1"><div class="em-icon">📂</div>上傳照片後會顯示在這裡</div>
     </div>
   </div>
 
-  <!-- TIMELINE -->
   <div class="page" id="page-timeline">
     <div id="timeline-content"><div class="empty-msg"><div class="em-icon">🕐</div>還沒有照片，趕快去上傳吧！</div></div>
   </div>
 
-  <!-- MILESTONE -->
   <div class="page" id="page-milestone">
     <button class="btn-add-milestone" onclick="openMilestoneAdd()">＋ 新增里程碑</button>
-    <div style="margin-top:1.2rem;" id="milestone-list">
+    <div style="margin-top:1rem;" id="milestone-list">
       <div class="empty-msg"><div class="em-icon">⭐</div>記錄寶寶的第一次！</div>
     </div>
   </div>
 
-  <!-- GROWTH -->
   <div class="page" id="page-growth">
     <div class="stats-row">
       <div class="stat-card">
@@ -324,11 +190,11 @@ body {
       </div>
     </div>
     <div class="section-title">📏 身高體重記錄</div>
-    <div id="growth-log" style="display:flex;flex-direction:column;gap:10px;"></div>
-    <div style="display:flex;gap:10px;margin-top:1rem;">
-      <input type="number" id="g-height" placeholder="身高 (cm)" style="flex:1;padding:0.6rem 0.9rem;border:1.5px solid #d9c8f0;border-radius:12px;font-size:0.9rem;outline:none;background:#faf7ff;color:#3a3a5c;">
-      <input type="number" id="g-weight" placeholder="體重 (kg)" style="flex:1;padding:0.6rem 0.9rem;border:1.5px solid #d9c8f0;border-radius:12px;font-size:0.9rem;outline:none;background:#faf7ff;color:#3a3a5c;">
-      <button class="btn-save" style="flex:0.6;border-radius:12px;" onclick="addGrowthLog()">記錄</button>
+    <div id="growth-log" style="display:flex;flex-direction:column;gap:8px;"></div>
+    <div style="display:flex;gap:8px;margin-top:0.9rem;flex-wrap:wrap;">
+      <input type="number" id="g-height" placeholder="身高 cm" style="flex:1;min-width:90px;padding:0.6rem 0.8rem;border:1.5px solid #d9c8f0;border-radius:11px;font-size:0.9rem;outline:none;background:#faf7ff;color:#3a3a5c;-webkit-appearance:none;">
+      <input type="number" id="g-weight" placeholder="體重 kg" style="flex:1;min-width:90px;padding:0.6rem 0.8rem;border:1.5px solid #d9c8f0;border-radius:11px;font-size:0.9rem;outline:none;background:#faf7ff;color:#3a3a5c;-webkit-appearance:none;">
+      <button class="btn-save" style="flex:0.6;min-width:70px;border-radius:11px;" onclick="addGrowthLog()">記錄</button>
     </div>
   </div>
 </div>
@@ -345,13 +211,14 @@ body {
       <button class="btn-close-modal" onclick="closeModal()">關閉</button>
       <button class="btn-save" onclick="savePhotoMeta()">儲存 ✨</button>
     </div>
+    <button class="btn-danger" onclick="deletePhoto()">🗑 刪除這張照片</button>
   </div>
 </div>
 
 <!-- Milestone Modal -->
 <div class="modal-overlay" id="milestone-modal">
   <div class="modal">
-    <div style="font-size:1.1rem;font-weight:700;color:#9b6dce;margin-bottom:1rem;">⭐ 新增里程碑</div>
+    <div style="font-size:1.05rem;font-weight:700;color:#9b6dce;margin-bottom:0.9rem;">⭐ 新增里程碑</div>
     <input type="text" id="ms-emoji" placeholder="表情符號（例：🦷）">
     <input type="text" id="ms-title" placeholder="里程碑名稱（例：第一顆牙）">
     <input type="date" id="ms-date">
@@ -365,7 +232,7 @@ body {
 <!-- Settings Modal -->
 <div class="modal-overlay" id="settings-modal">
   <div class="modal">
-    <div style="font-size:1.1rem;font-weight:700;color:#9b6dce;margin-bottom:1rem;">⚙ 設定寶寶資訊</div>
+    <div style="font-size:1.05rem;font-weight:700;color:#9b6dce;margin-bottom:0.9rem;">⚙ 設定</div>
     <input type="text" id="s-name" placeholder="寶寶名字">
     <input type="date" id="s-dob">
     <div class="modal-btns">
@@ -375,28 +242,20 @@ body {
   </div>
 </div>
 
-<!-- PDF Style Modal -->
+<!-- PDF Modal -->
 <div class="modal-overlay" id="pdf-modal">
   <div class="modal">
-    <div style="font-size:1.1rem;font-weight:700;color:#9b6dce;margin-bottom:0.4rem;">📖 匯出成長相冊</div>
-    <div style="font-size:0.82rem;color:#b0a0cc;margin-bottom:1.2rem;">選擇相冊版面風格</div>
+    <div style="font-size:1.05rem;font-weight:700;color:#9b6dce;margin-bottom:0.3rem;">📖 匯出成長相冊</div>
+    <div style="font-size:0.8rem;color:#b0a0cc;margin-bottom:1rem;">選擇版面風格</div>
     <div class="pdf-style-grid">
-      <button class="pdf-style-btn selected" id="ps-1x1" onclick="selectPdfStyle('1x1')">
-        <span class="ps-icon">🖼️</span>每頁一張<br><span style="font-size:0.72rem;color:#b0a0cc;">大圖＋說明</span>
-      </button>
-      <button class="pdf-style-btn" id="ps-2x2" onclick="selectPdfStyle('2x2')">
-        <span class="ps-icon">🔲</span>每頁四張<br><span style="font-size:0.72rem;color:#b0a0cc;">精簡格狀</span>
-      </button>
-      <button class="pdf-style-btn" id="ps-timeline" onclick="selectPdfStyle('timeline')">
-        <span class="ps-icon">📅</span>時光軸<br><span style="font-size:0.72rem;color:#b0a0cc;">按月份分頁</span>
-      </button>
-      <button class="pdf-style-btn" id="ps-milestone" onclick="selectPdfStyle('milestone')">
-        <span class="ps-icon">⭐</span>里程碑冊<br><span style="font-size:0.72rem;color:#b0a0cc;">特別時刻集錦</span>
-      </button>
+      <button class="pdf-style-btn selected" id="ps-1x1" onclick="selectPdfStyle('1x1')"><span class="ps-icon">🖼️</span>每頁一張</button>
+      <button class="pdf-style-btn" id="ps-2x2" onclick="selectPdfStyle('2x2')"><span class="ps-icon">🔲</span>每頁四張</button>
+      <button class="pdf-style-btn" id="ps-timeline" onclick="selectPdfStyle('timeline')"><span class="ps-icon">📅</span>時光軸</button>
+      <button class="pdf-style-btn" id="ps-milestone" onclick="selectPdfStyle('milestone')"><span class="ps-icon">⭐</span>里程碑冊</button>
     </div>
     <div class="modal-btns">
       <button class="btn-close-modal" onclick="document.getElementById('pdf-modal').classList.remove('open')">取消</button>
-      <button class="btn-save" onclick="generatePDF()">開始匯出 📥</button>
+      <button class="btn-save" onclick="generatePDF()">匯出 📥</button>
     </div>
   </div>
 </div>
@@ -412,58 +271,72 @@ body {
 </div>
 
 <script>
-let babyName='', babyDob=null;
-let photos=[], milestones=[], growthLogs=[];
-let currentPhotoId=null, selectedPdfStyle='1x1';
+// ── IndexedDB ──
+const DB_NAME='babyTimehouse', DB_VER=1;
+let db=null;
 
-function saveToLocal(){
-  try{
-    const data={babyName,babyDob:babyDob?babyDob.toISOString():null,milestones:milestones.map(m=>({...m,date:m.date.toISOString()})),growthLogs:growthLogs.map(g=>({...g,date:g.date.toISOString()})),photos:photos.map(p=>({...p,date:p.date.toISOString()}))};
-    localStorage.setItem('babyTimehouse',JSON.stringify(data));
-  }catch(e){console.warn('儲存失敗',e);}
+function openDB(){
+  return new Promise((res,rej)=>{
+    const req=indexedDB.open(DB_NAME,DB_VER);
+    req.onupgradeneeded=e=>{
+      const d=e.target.result;
+      if(!d.objectStoreNames.contains('photos')) d.createObjectStore('photos',{keyPath:'id'});
+      if(!d.objectStoreNames.contains('meta')) d.createObjectStore('meta',{keyPath:'key'});
+      if(!d.objectStoreNames.contains('milestones')) d.createObjectStore('milestones',{keyPath:'id',autoIncrement:true});
+      if(!d.objectStoreNames.contains('growth')) d.createObjectStore('growth',{keyPath:'id',autoIncrement:true});
+    };
+    req.onsuccess=e=>{db=e.target.result;res(db);};
+    req.onerror=()=>rej(req.error);
+  });
+}
+function dbPut(store,val){return new Promise((r,j)=>{const t=db.transaction(store,'readwrite');const req=t.objectStore(store).put(val);req.onsuccess=()=>r(req.result);req.onerror=()=>j(req.error);});}
+function dbGet(store,key){return new Promise((r,j)=>{const t=db.transaction(store,'readonly');const req=t.objectStore(store).get(key);req.onsuccess=()=>r(req.result);req.onerror=()=>j(req.error);});}
+function dbGetAll(store){return new Promise((r,j)=>{const t=db.transaction(store,'readonly');const req=t.objectStore(store).getAll();req.onsuccess=()=>r(req.result);req.onerror=()=>j(req.error);});}
+function dbDelete(store,key){return new Promise((r,j)=>{const t=db.transaction(store,'readwrite');const req=t.objectStore(store).delete(key);req.onsuccess=()=>r();req.onerror=()=>j(req.error);});}
+function dbClear(store){return new Promise((r,j)=>{const t=db.transaction(store,'readwrite');const req=t.objectStore(store).clear();req.onsuccess=()=>r();req.onerror=()=>j(req.error);});}
+
+// ── State ──
+let babyName='',babyDob=null;
+let photos=[],milestones=[],growthLogs=[];
+let currentPhotoId=null,selectedPdfStyle='1x1';
+
+async function saveMeta(){
+  await dbPut('meta',{key:'babyName',value:babyName});
+  await dbPut('meta',{key:'babyDob',value:babyDob?babyDob.toISOString():null});
+}
+async function loadAll(){
+  const n=await dbGet('meta','babyName');
+  const d=await dbGet('meta','babyDob');
+  if(!n||!n.value) return false;
+  babyName=n.value;
+  babyDob=d&&d.value?new Date(d.value):null;
+  const ps=await dbGetAll('photos');
+  photos=ps.map(p=>({...p,date:new Date(p.date)}));
+  const ms=await dbGetAll('milestones');
+  milestones=ms.map(m=>({...m,date:new Date(m.date)}));
+  const gl=await dbGetAll('growth');
+  growthLogs=gl.map(g=>({...g,date:new Date(g.date)}));
+  return !!babyName&&!!babyDob;
 }
 
-function loadFromLocal(){
-  try{
-    const raw=localStorage.getItem('babyTimehouse');
-    if(!raw) return false;
-    const data=JSON.parse(raw);
-    babyName=data.babyName||'';
-    babyDob=data.babyDob?new Date(data.babyDob):null;
-    photos=(data.photos||[]).map(p=>({...p,date:new Date(p.date)}));
-    milestones=(data.milestones||[]).map(m=>({...m,date:new Date(m.date)}));
-    growthLogs=(data.growthLogs||[]).map(g=>({...g,date:new Date(g.date)}));
-    return !!babyName&&!!babyDob;
-  }catch(e){return false;}
-}
-
-// ── SETUP ──
-function startApp(){
-  const n=document.getElementById('setup-name').value.trim();
-  const d=document.getElementById('setup-dob').value;
-  if(!n||!d){alert('請輸入寶寶名字和生日！');return;}
-  babyName=n; babyDob=new Date(d);
-  saveToLocal();
-  document.getElementById('setup-screen').style.display='none';
-  document.getElementById('app').style.display='block';
-  updateHeader();
-  gtag('event','app_start',{baby_name:n});
-}
-
-window.addEventListener('DOMContentLoaded',()=>{
-  if(loadFromLocal()){
+// ── Init ──
+window.addEventListener('DOMContentLoaded',async()=>{
+  await openDB();
+  const ok=await loadAll();
+  if(ok){
     document.getElementById('setup-screen').style.display='none';
     document.getElementById('app').style.display='block';
     updateHeader();
     renderUploadGrid();
     renderMilestones();
     renderGrowthLog();
+    updateStorageInfo();
   }
 });
 
 function getAge(date){
   if(!babyDob) return '';
-  const diff=date-babyDob, days=Math.floor(diff/86400000);
+  const diff=date-babyDob,days=Math.floor(diff/86400000);
   if(days<0) return '';
   const months=Math.floor(days/30.44);
   if(months<1) return days+'天';
@@ -471,12 +344,31 @@ function getAge(date){
   const y=Math.floor(months/12),m=months%12;
   return m>0?y+'歲'+m+'個月':y+'歲';
 }
-
 function updateHeader(){
   document.getElementById('h-name').textContent=babyName+'的時光小屋';
-  const age=getAge(new Date());
-  document.getElementById('h-age').textContent='現在 '+(age||'—');
+  document.getElementById('h-age').textContent='現在 '+(getAge(new Date())||'—');
   document.getElementById('g-months').textContent=babyDob?Math.floor((new Date()-babyDob)/(30.44*86400000)):'—';
+}
+async function updateStorageInfo(){
+  const ps=await dbGetAll('photos');
+  const count=ps.length;
+  const approx=ps.reduce((s,p)=>s+(p.src?p.src.length:0),0);
+  const mb=(approx/1024/1024).toFixed(1);
+  document.getElementById('storage-info').innerHTML=`📦 已儲存 ${count} 張照片，約 ${mb} MB（IndexedDB 無上限限制）<div class="storage-fill" style="width:${Math.min(mb/500*100,100)}%"></div>`;
+  document.getElementById('photo-count').textContent='('+photos.filter(p=>p.approved).length+'張)';
+  document.getElementById('g-photos').textContent=photos.filter(p=>p.approved).length;
+}
+
+async function startApp(){
+  const n=document.getElementById('setup-name').value.trim();
+  const d=document.getElementById('setup-dob').value;
+  if(!n||!d){alert('請輸入寶寶名字和生日！');return;}
+  babyName=n;babyDob=new Date(d);
+  await saveMeta();
+  document.getElementById('setup-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  updateHeader();
+  gtag('event','app_start',{baby_name:n});
 }
 
 function switchPage(id,btn){
@@ -485,49 +377,48 @@ function switchPage(id,btn){
   document.getElementById('page-'+id).classList.add('active');
   btn.classList.add('active');
   if(id==='timeline') renderTimeline();
-  if(id==='growth'){document.getElementById('g-photos').textContent=photos.filter(p=>p.approved).length;renderGrowthLog();}
+  if(id==='growth'){updateStorageInfo();}
   gtag('event','page_view',{page:id});
 }
 
-// ── UPLOAD & AI ──
+// ── Upload ──
 async function handleFiles(e){
-  const files=Array.from(e.target.files); if(!files.length) return;
+  const files=Array.from(e.target.files);if(!files.length)return;
   const apiKey=document.getElementById('api-key-input').value.trim();
-  const sb=document.getElementById('ai-status-box'); sb.style.display='block'; sb.innerHTML='';
+  const sb=document.getElementById('ai-status-box');sb.style.display='block';
   for(const file of files){
-    const id=Date.now()+Math.random();
+    const id='p_'+Date.now()+'_'+Math.random().toString(36).slice(2);
     const src=await readFile(file);
     const photoDate=file.lastModified?new Date(file.lastModified):new Date();
-    const row=document.createElement('div'); row.className='status-row';
+    const row=document.createElement('div');row.className='status-row';
     row.innerHTML=`<div class="dot analyzing" id="dot-${id}"></div><span id="txt-${id}">${file.name} — 分析中…</span>`;
     sb.appendChild(row);
     let approved=false;
     if(apiKey){
       try{
-        const base64=src.split(',')[1], mt=file.type||'image/jpeg';
-        const res=await fetch('https://api.anthropic.com/v1/messages',{
-          method:'POST',
+        const base64=src.split(',')[1],mt=file.type||'image/jpeg';
+        const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
           headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01'},
           body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:60,
             messages:[{role:'user',content:[
               {type:'image',source:{type:'base64',media_type:mt,data:base64}},
               {type:'text',text:'這張照片中有沒有嬰幼兒（0-3歲的寶寶）？請只回答 yes 或 no。'}
-            ]}]})
-        });
+            ]}]})});
         const data=await res.json();
         approved=(data.content?.[0]?.text||'').toLowerCase().includes('yes');
       }catch{approved=true;}
     }else{approved=true;}
-    const dot=document.getElementById('dot-'+id), txt=document.getElementById('txt-'+id);
+    const dot=document.getElementById('dot-'+id),txt=document.getElementById('txt-'+id);
     if(approved){
-      dot.className='dot pass'; txt.textContent=file.name+' — ✅ 寶寶照片！';
-      photos.push({id,src,date:photoDate,age:getAge(photoDate),tag:'',note:'',approved:true});
-      saveToLocal();
+      dot.className='dot pass';txt.textContent=file.name+' — ✅ 寶寶照片！';
+      const photo={id,src,date:photoDate.toISOString(),age:getAge(photoDate),tag:'',note:'',approved:true};
+      await dbPut('photos',photo);
+      photos.push({...photo,date:photoDate});
       renderUploadGrid();
+      updateStorageInfo();
       gtag('event','photo_uploaded',{approved:true});
     }else{
-      dot.className='dot fail'; txt.textContent=file.name+' — ❌ 未偵測到寶寶';
-      gtag('event','photo_uploaded',{approved:false});
+      dot.className='dot fail';txt.textContent=file.name+' — ❌ 未偵測到寶寶';
     }
   }
   e.target.value='';
@@ -538,81 +429,122 @@ function readFile(f){return new Promise(r=>{const fr=new FileReader();fr.onload=
 function renderUploadGrid(){
   const g=document.getElementById('upload-grid');
   const approved=photos.filter(p=>p.approved);
-  if(!approved.length){g.innerHTML='<div class="empty-msg" style="grid-column:1/-1"><div class="em-icon">📂</div>上傳照片後，AI 會自動辨識寶寶照片</div>';return;}
+  if(!approved.length){g.innerHTML='<div class="empty-msg" style="grid-column:1/-1"><div class="em-icon">📂</div>上傳照片後會顯示在這裡</div>';return;}
   g.innerHTML='';
   approved.slice().reverse().forEach(p=>{
     const c=document.createElement('div');c.className='photo-card';c.onclick=()=>openModal(p.id);
-    c.innerHTML=`<img src="${p.src}" alt="寶寶照片"><div class="photo-card-info"><div class="photo-card-age">${p.age||'—'}</div><div class="photo-card-date">${p.date.toLocaleDateString('zh-TW')}</div></div>${p.tag?`<div class="photo-card-tag">${p.tag}</div>`:''}`;
+    c.innerHTML=`<img src="${p.src}" alt="寶寶照片" loading="lazy"><div class="photo-card-info"><div class="photo-card-age">${p.age||'—'}</div><div class="photo-card-date">${new Date(p.date).toLocaleDateString('zh-TW')}</div></div>${p.tag?`<div class="photo-card-tag">${p.tag}</div>`:''}`;
     g.appendChild(c);
   });
 }
 
 function renderTimeline(){
   const el=document.getElementById('timeline-content');
-  const approved=photos.filter(p=>p.approved).sort((a,b)=>a.date-b.date);
+  const approved=photos.filter(p=>p.approved).sort((a,b)=>new Date(a.date)-new Date(b.date));
   if(!approved.length){el.innerHTML='<div class="empty-msg"><div class="em-icon">🕐</div>還沒有照片，趕快去上傳吧！</div>';return;}
   const groups={};
-  approved.forEach(p=>{const k=p.date.toLocaleDateString('zh-TW',{year:'numeric',month:'long'});if(!groups[k])groups[k]=[];groups[k].push(p);});
+  approved.forEach(p=>{const k=new Date(p.date).toLocaleDateString('zh-TW',{year:'numeric',month:'long'});if(!groups[k])groups[k]=[];groups[k].push(p);});
   el.innerHTML='';
   for(const[month,ps]of Object.entries(groups)){
     const g=document.createElement('div');g.className='month-group';
     g.innerHTML=`<div class="month-label">📅 ${month}</div><div class="photo-grid"></div>`;
     const grid=g.querySelector('.photo-grid');
-    ps.forEach(p=>{const c=document.createElement('div');c.className='photo-card';c.onclick=()=>openModal(p.id);c.innerHTML=`<img src="${p.src}" alt="寶寶照片"><div class="photo-card-info"><div class="photo-card-age">${p.age||'—'}</div><div class="photo-card-date">${p.date.toLocaleDateString('zh-TW')}</div></div>${p.tag?`<div class="photo-card-tag">${p.tag}</div>`:''}`;grid.appendChild(c);});
+    ps.forEach(p=>{const c=document.createElement('div');c.className='photo-card';c.onclick=()=>openModal(p.id);c.innerHTML=`<img src="${p.src}" alt="寶寶照片" loading="lazy"><div class="photo-card-info"><div class="photo-card-age">${p.age||'—'}</div><div class="photo-card-date">${new Date(p.date).toLocaleDateString('zh-TW')}</div></div>${p.tag?`<div class="photo-card-tag">${p.tag}</div>`:''}`;grid.appendChild(c);});
     el.appendChild(g);
   }
 }
 
 function openModal(id){
-  currentPhotoId=id;const p=photos.find(x=>x.id===id);
+  currentPhotoId=id;
+  const p=photos.find(x=>x.id===id);
   document.getElementById('modal-img').src=p.src;
   document.getElementById('modal-age').textContent=p.age?'月齡：'+p.age:'';
-  document.getElementById('modal-date').textContent=p.date.toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('modal-date').textContent=new Date(p.date).toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
   document.getElementById('modal-tag').value=p.tag||'';
   document.getElementById('modal-note').value=p.note||'';
   document.getElementById('photo-modal').classList.add('open');
 }
 function closeModal(){document.getElementById('photo-modal').classList.remove('open');}
-function savePhotoMeta(){
+async function savePhotoMeta(){
   const p=photos.find(x=>x.id===currentPhotoId);
   p.tag=document.getElementById('modal-tag').value.trim();
   p.note=document.getElementById('modal-note').value.trim();
-  saveToLocal();
+  await dbPut('photos',{...p,date:p.date instanceof Date?p.date.toISOString():p.date});
   closeModal();renderUploadGrid();renderTimeline();
 }
+async function deletePhoto(){
+  if(!confirm('確定要刪除這張照片嗎？')) return;
+  await dbDelete('photos',currentPhotoId);
+  photos=photos.filter(p=>p.id!==currentPhotoId);
+  closeModal();renderUploadGrid();renderTimeline();updateStorageInfo();
+}
 
-function saveMilestone(){
-  const e=document.getElementById('ms-emoji').value.trim()||'⭐';
+function openMilestoneAdd(){
+  document.getElementById('ms-emoji').value='';
+  document.getElementById('ms-title').value='';
+  document.getElementById('ms-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('milestone-modal').classList.add('open');
+}
+async function saveMilestone(){
+  const em=document.getElementById('ms-emoji').value.trim()||'⭐';
   const t=document.getElementById('ms-title').value.trim();
   const d=document.getElementById('ms-date').value;
   if(!t||!d){alert('請填寫里程碑名稱和日期！');return;}
   const date=new Date(d);
-  milestones.push({emoji:e,title:t,date,age:getAge(date)});
-  milestones.sort((a,b)=>a.date-b.date);
-  saveToLocal();
+  const obj={emoji:em,title:t,date:date.toISOString(),age:getAge(date)};
+  const newId=await dbPut('milestones',obj);
+  milestones.push({...obj,id:newId,date});
+  milestones.sort((a,b)=>new Date(a.date)-new Date(b.date));
   document.getElementById('milestone-modal').classList.remove('open');
   renderMilestones();
   gtag('event','milestone_added',{title:t});
 }
+function renderMilestones(){
+  const el=document.getElementById('milestone-list');
+  if(!milestones.length){el.innerHTML='<div class="empty-msg"><div class="em-icon">⭐</div>記錄寶寶的第一次！</div>';return;}
+  el.innerHTML='';
+  milestones.forEach(m=>{
+    const c=document.createElement('div');c.className='milestone-card';
+    c.innerHTML=`<div class="milestone-emoji">${m.emoji}</div><div><div class="milestone-title">${m.title}</div><div class="milestone-date">${new Date(m.date).toLocaleDateString('zh-TW')}${m.age?'・'+m.age:''}</div></div>`;
+    el.appendChild(c);
+  });
+}
 
-function addGrowthLog(){
+async function addGrowthLog(){
   const h=parseFloat(document.getElementById('g-height').value);
   const w=parseFloat(document.getElementById('g-weight').value);
   if(!h&&!w){alert('請輸入身高或體重！');return;}
-  growthLogs.push({date:new Date(),height:h||null,weight:w||null});
+  const obj={date:new Date().toISOString(),height:h||null,weight:w||null};
+  await dbPut('growth',obj);
+  growthLogs.push({...obj,date:new Date(obj.date)});
   document.getElementById('g-height').value='';document.getElementById('g-weight').value='';
-  saveToLocal();
   renderGrowthLog();
 }
+function renderGrowthLog(){
+  const el=document.getElementById('growth-log');el.innerHTML='';
+  growthLogs.slice().reverse().forEach(log=>{
+    const c=document.createElement('div');
+    c.style.cssText='background:rgba(255,255,255,0.7);border-radius:13px;padding:0.75rem 1rem;border:1.5px solid rgba(180,140,240,0.2);display:flex;justify-content:space-between;align-items:center;';
+    c.innerHTML=`<div style="font-size:0.78rem;color:#b0a0cc;">${new Date(log.date).toLocaleDateString('zh-TW')}</div><div style="display:flex;gap:14px;">${log.height?`<span style="color:#9b6dce;font-weight:700;">📏 ${log.height}cm</span>`:''}${log.weight?`<span style="color:#6ba8e0;font-weight:700;">⚖️ ${log.weight}kg</span>`:''}</div>`;
+    el.appendChild(c);
+  });
+  if(!growthLogs.length) el.innerHTML='<div class="empty-msg"><div class="em-icon">📏</div>還沒有記錄</div>';
+}
 
-function saveSettings(){
+function showSettings(){
+  document.getElementById('s-name').value=babyName;
+  document.getElementById('s-dob').value=babyDob?babyDob.toISOString().split('T')[0]:'';
+  document.getElementById('settings-modal').classList.add('open');
+}
+async function saveSettings(){
   const n=document.getElementById('s-name').value.trim();
   const d=document.getElementById('s-dob').value;
   if(!n||!d){alert('請填寫完整！');return;}
   babyName=n;babyDob=new Date(d);
-  photos.forEach(p=>{p.age=getAge(p.date);});
-  milestones.forEach(m=>{m.age=getAge(m.date);});
-  saveToLocal();
+  photos.forEach(p=>{p.age=getAge(new Date(p.date));});
+  milestones.forEach(m=>{m.age=getAge(new Date(m.date));});
+  await saveMeta();
+  for(const p of photos) await dbPut('photos',{...p,date:p.date instanceof Date?p.date.toISOString():p.date});
   document.getElementById('settings-modal').classList.remove('open');
   updateHeader();renderUploadGrid();renderTimeline();renderMilestones();
 }
@@ -625,202 +557,111 @@ function openPdfModal(){
 }
 function selectPdfStyle(s){
   selectedPdfStyle=s;
-  ['1x1','2x2','timeline','milestone'].forEach(k=>{
-    document.getElementById('ps-'+k).classList.toggle('selected',k===s);
-  });
+  ['1x1','2x2','timeline','milestone'].forEach(k=>{document.getElementById('ps-'+k).classList.toggle('selected',k===s);});
 }
-
 function setProgress(pct,sub,count){
   document.getElementById('pdf-bar').style.width=pct+'%';
   document.getElementById('pdf-sub-text').textContent=sub;
   document.getElementById('pdf-count').textContent=count||'';
 }
-
 async function generatePDF(){
   document.getElementById('pdf-modal').classList.remove('open');
-  const ov=document.getElementById('pdf-overlay'); ov.classList.add('show');
-  setProgress(5,'初始化…','');
-  await sleep(100);
+  const ov=document.getElementById('pdf-overlay');ov.classList.add('show');
+  setProgress(5,'初始化…','');await sleep(100);
   gtag('event','pdf_export',{style:selectedPdfStyle});
-
   const {jsPDF}=window.jspdf;
   const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
   const W=210,H=297;
-
-  // Cover page
   doc.setFillColor(240,230,255);doc.rect(0,0,W,H,'F');
   doc.setFillColor(230,240,255);doc.ellipse(160,60,80,80,'F');
   doc.setFillColor(255,230,245);doc.ellipse(50,220,60,60,'F');
-  doc.setTextColor(130,80,200);
-  doc.setFontSize(28);doc.setFont('helvetica','bold');
-  doc.text(babyName+"'s", W/2, 110, {align:'center'});
-  doc.text('Baby Album', W/2, 128, {align:'center'});
-  doc.setFontSize(13);doc.setFont('helvetica','normal');doc.setTextColor(160,140,190);
-  doc.text(babyName+' 的成長記錄相冊', W/2, 145, {align:'center'});
-  doc.setFontSize(10);doc.text('生日：'+(babyDob?babyDob.toLocaleDateString('zh-TW'):'—'), W/2, 158, {align:'center'});
-  doc.text('月齡：'+getAge(new Date()), W/2, 165, {align:'center'});
-  doc.setFontSize(9);doc.setTextColor(190,170,210);
-  doc.text('由寶寶時光小屋生成', W/2, 280, {align:'center'});
-
-  setProgress(15,'製作封面完成','');
-  await sleep(50);
-
-  const approved=photos.filter(p=>p.approved).sort((a,b)=>a.date-b.date);
-
-  if(selectedPdfStyle==='1x1'){
-    await style1x1(doc,approved,W,H);
-  }else if(selectedPdfStyle==='2x2'){
-    await style2x2(doc,approved,W,H);
-  }else if(selectedPdfStyle==='timeline'){
-    await styleTimeline(doc,approved,W,H);
-  }else{
-    await styleMilestone(doc,W,H);
-  }
-
-  setProgress(100,'完成！','');
-  await sleep(300);
+  doc.setTextColor(130,80,200);doc.setFontSize(28);doc.setFont('helvetica','bold');
+  doc.text(babyName+"'s",W/2,110,{align:'center'});
+  doc.text('Baby Album',W/2,128,{align:'center'});
+  doc.setFontSize(12);doc.setFont('helvetica','normal');doc.setTextColor(160,140,190);
+  doc.text('生日：'+(babyDob?babyDob.toLocaleDateString('zh-TW'):'—'),W/2,148,{align:'center'});
+  doc.text('月齡：'+getAge(new Date()),W/2,156,{align:'center'});
+  doc.setFontSize(8);doc.setTextColor(190,170,210);doc.text('由寶寶時光小屋生成',W/2,280,{align:'center'});
+  setProgress(15,'封面完成','');await sleep(50);
+  const approved=photos.filter(p=>p.approved).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  if(selectedPdfStyle==='1x1') await style1x1(doc,approved,W,H);
+  else if(selectedPdfStyle==='2x2') await style2x2(doc,approved,W,H);
+  else if(selectedPdfStyle==='timeline') await styleTimeline(doc,approved,W,H);
+  else await styleMilestone(doc,W,H);
+  setProgress(100,'完成！','');await sleep(300);
   ov.classList.remove('show');
   doc.save(babyName+'_成長相冊.pdf');
 }
-
 async function style1x1(doc,photos,W,H){
   for(let i=0;i<photos.length;i++){
-    const p=photos[i];
-    setProgress(15+Math.round(80*(i+1)/photos.length),'大圖版面…',`${i+1} / ${photos.length} 張`);
-    await sleep(20);
-    doc.addPage();
-    // soft bg
-    doc.setFillColor(250,245,255);doc.rect(0,0,W,H,'F');
-    // header bar
+    const p=photos[i];setProgress(15+Math.round(80*(i+1)/photos.length),'大圖版面…',`${i+1}/${photos.length}`);await sleep(20);
+    doc.addPage();doc.setFillColor(250,245,255);doc.rect(0,0,W,H,'F');
     doc.setFillColor(210,185,245);doc.roundedRect(0,0,W,18,0,0,'F');
     doc.setTextColor(255,255,255);doc.setFontSize(9);doc.setFont('helvetica','bold');
-    doc.text(babyName, 12, 11);
-    doc.text(p.date.toLocaleDateString('zh-TW'), W-12, 11, {align:'right'});
-    // photo
-    try{
-      const imgData=await toBase64Img(p.src,160,160);
-      doc.addImage(imgData,'JPEG',25,24,160,160);
-    }catch{}
-    // age badge
-    if(p.age){
-      doc.setFillColor(155,109,206);doc.roundedRect(14,188,50,10,5,5,'F');
-      doc.setTextColor(255,255,255);doc.setFontSize(8);doc.setFont('helvetica','bold');
-      doc.text(p.age, 39, 194.5, {align:'center'});
-    }
-    // tag
-    if(p.tag){
-      doc.setFillColor(230,215,255);doc.roundedRect(70,188,W-84,10,5,5,'F');
-      doc.setTextColor(110,70,180);doc.setFontSize(8);doc.setFont('helvetica','normal');
-      doc.text(p.tag, W/2, 194.5, {align:'center'});
-    }
-    // note
-    if(p.note){
-      doc.setTextColor(140,120,170);doc.setFontSize(9);doc.setFont('helvetica','italic');
-      const lines=doc.splitTextToSize(p.note, W-40);
-      doc.text(lines, W/2, 210, {align:'center'});
-    }
-    // page num
-    doc.setTextColor(200,185,220);doc.setFontSize(8);doc.setFont('helvetica','normal');
-    doc.text(i+1+' / '+photos.length, W/2, H-6, {align:'center'});
+    doc.text(babyName,12,11);doc.text(new Date(p.date).toLocaleDateString('zh-TW'),W-12,11,{align:'right'});
+    try{const img=await toBase64Img(p.src,160,160);doc.addImage(img,'JPEG',25,24,160,160);}catch{}
+    if(p.age){doc.setFillColor(155,109,206);doc.roundedRect(14,188,50,10,5,5,'F');doc.setTextColor(255,255,255);doc.setFontSize(8);doc.setFont('helvetica','bold');doc.text(p.age,39,194.5,{align:'center'});}
+    if(p.tag){doc.setFillColor(230,215,255);doc.roundedRect(70,188,W-84,10,5,5,'F');doc.setTextColor(110,70,180);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text(p.tag,W/2,194.5,{align:'center'});}
+    if(p.note){doc.setTextColor(140,120,170);doc.setFontSize(9);doc.setFont('helvetica','italic');const lines=doc.splitTextToSize(p.note,W-40);doc.text(lines,W/2,210,{align:'center'});}
+    doc.setTextColor(200,185,220);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text((i+1)+'/'+photos.length,W/2,H-6,{align:'center'});
   }
 }
-
 async function style2x2(doc,photos,W,H){
-  const perPage=4, cols=2, rows=2;
-  const cellW=(W-30)/cols, cellH=(H-30)/rows;
-  for(let i=0;i<photos.length;i+=perPage){
-    doc.addPage();
-    doc.setFillColor(248,244,255);doc.rect(0,0,W,H,'F');
-    const batch=photos.slice(i,i+perPage);
+  const cols=2,cellW=(W-30)/cols,cellH=(H-30)/cols;
+  for(let i=0;i<photos.length;i+=4){
+    doc.addPage();doc.setFillColor(248,244,255);doc.rect(0,0,W,H,'F');
+    const batch=photos.slice(i,i+4);
     for(let j=0;j<batch.length;j++){
-      const p=batch[j];
-      const col=j%cols, row=Math.floor(j/cols);
-      const x=10+col*(cellW+10), y=10+row*(cellH+10);
-      setProgress(15+Math.round(80*(i+j+1)/photos.length),'格狀版面…',`${i+j+1} / ${photos.length} 張`);
-      await sleep(15);
+      const p=batch[j];setProgress(15+Math.round(80*(i+j+1)/photos.length),'格狀版面…',`${i+j+1}/${photos.length}`);await sleep(10);
+      const col=j%cols,row=Math.floor(j/cols),x=10+col*(cellW+10),y=10+row*(cellH+10);
       doc.setFillColor(255,255,255);doc.roundedRect(x,y,cellW,cellH,6,6,'F');
-      try{
-        const imgData=await toBase64Img(p.src,Math.round(cellW-4),Math.round(cellH-20));
-        doc.addImage(imgData,'JPEG',x+2,y+2,cellW-4,cellH-20);
-      }catch{}
-      doc.setTextColor(130,80,200);doc.setFontSize(7);doc.setFont('helvetica','bold');
-      doc.text(p.age||'', x+4, y+cellH-10);
-      doc.setTextColor(160,140,185);doc.setFontSize(6.5);doc.setFont('helvetica','normal');
-      doc.text(p.date.toLocaleDateString('zh-TW'), x+cellW-4, y+cellH-10, {align:'right'});
-      if(p.tag){doc.setTextColor(155,109,206);doc.text(p.tag, x+cellW/2, y+cellH-4, {align:'center'});}
+      try{const img=await toBase64Img(p.src,cellW-4,cellH-18);doc.addImage(img,'JPEG',x+2,y+2,cellW-4,cellH-18);}catch{}
+      doc.setTextColor(130,80,200);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.text(p.age||'',x+4,y+cellH-8);
+      doc.setTextColor(170,150,195);doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.text(new Date(p.date).toLocaleDateString('zh-TW'),x+cellW-4,y+cellH-8,{align:'right'});
     }
-    doc.setTextColor(200,185,220);doc.setFontSize(8);
-    doc.text(Math.ceil((i+1)/perPage)+' / '+Math.ceil(photos.length/perPage), W/2, H-3, {align:'center'});
   }
 }
-
 async function styleTimeline(doc,photos,W,H){
-  const groups={};
-  photos.forEach(p=>{const k=p.date.toLocaleDateString('zh-TW',{year:'numeric',month:'long'});if(!groups[k])groups[k]=[];groups[k].push(p);});
-  let pg=0;
+  const groups={};photos.forEach(p=>{const k=new Date(p.date).toLocaleDateString('zh-TW',{year:'numeric',month:'long'});if(!groups[k])groups[k]=[];groups[k].push(p);});
+  let pg=0;const total=Object.keys(groups).length;
   for(const[month,ps]of Object.entries(groups)){
-    doc.addPage(); pg++;
+    doc.addPage();pg++;setProgress(15+Math.round(80*pg/total),'時光軸版面…','月份 '+pg+'/'+total);await sleep(20);
     doc.setFillColor(245,240,255);doc.rect(0,0,W,H,'F');
     doc.setFillColor(185,155,240);doc.roundedRect(0,0,W,22,0,0,'F');
-    doc.setTextColor(255,255,255);doc.setFontSize(13);doc.setFont('helvetica','bold');
-    doc.text('📅 '+month, W/2, 14, {align:'center'});
-    const cols=3, cellW=(W-20)/cols, cellH=cellW+14;
-    ps.slice(0,9).forEach(async(p,j)=>{
-      setProgress(15+Math.round(80*pg/Object.keys(groups).length),'時光軸版面…','月份 '+pg+' / '+Object.keys(groups).length);
-      const col=j%cols, row=Math.floor(j/cols);
-      const x=10+col*(cellW+5), y=28+row*(cellH+6);
-      doc.setFillColor(255,255,255);doc.roundedRect(x,y,cellW,cellH,5,5,'F');
-      try{
-        const imgData=await toBase64Img(p.src,Math.round(cellW-4),Math.round(cellW-4));
-        doc.addImage(imgData,'JPEG',x+2,y+2,cellW-4,cellW-4);
-      }catch{}
-      doc.setTextColor(130,80,200);doc.setFontSize(6.5);doc.setFont('helvetica','bold');
-      doc.text(p.age||'', x+3, y+cellH-7);
-      doc.setTextColor(170,150,195);doc.setFontSize(6);doc.setFont('helvetica','normal');
-      if(p.tag) doc.text(p.tag, x+cellW/2, y+cellH-2, {align:'center'});
-    });
-    await sleep(30);
+    doc.setTextColor(255,255,255);doc.setFontSize(13);doc.setFont('helvetica','bold');doc.text(month,W/2,14,{align:'center'});
+    const cols=3,cellW=(W-20)/cols;
+    for(let j=0;j<Math.min(ps.length,9);j++){
+      const p=ps[j],col=j%cols,row=Math.floor(j/cols),x=10+col*(cellW+5),y=28+row*(cellW+20);
+      doc.setFillColor(255,255,255);doc.roundedRect(x,y,cellW,cellW+14,5,5,'F');
+      try{const img=await toBase64Img(p.src,cellW-4,cellW-4);doc.addImage(img,'JPEG',x+2,y+2,cellW-4,cellW-4);}catch{}
+      doc.setTextColor(130,80,200);doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.text(p.age||'',x+3,y+cellW+8);
+    }
   }
 }
-
 async function styleMilestone(doc,W,H){
-  if(!milestones.length){doc.addPage();doc.setFontSize(14);doc.text('尚無里程碑記錄',W/2,H/2,{align:'center'});return;}
-  doc.addPage();
-  doc.setFillColor(255,243,250);doc.rect(0,0,W,H,'F');
+  if(!milestones.length){doc.addPage();doc.setFontSize(14);doc.setTextColor(150,100,200);doc.text('尚無里程碑記錄',W/2,H/2,{align:'center'});return;}
+  doc.addPage();doc.setFillColor(255,243,250);doc.rect(0,0,W,H,'F');
   doc.setFillColor(220,180,250);doc.roundedRect(0,0,W,22,0,0,'F');
-  doc.setTextColor(255,255,255);doc.setFontSize(14);doc.setFont('helvetica','bold');
-  doc.text('⭐ '+babyName+' 的成長里程碑', W/2, 14, {align:'center'});
+  doc.setTextColor(255,255,255);doc.setFontSize(14);doc.setFont('helvetica','bold');doc.text(babyName+' 的成長里程碑',W/2,14,{align:'center'});
   let y=32;
   milestones.forEach((m,i)=>{
     setProgress(15+Math.round(80*(i+1)/milestones.length),'里程碑版面…','');
-    if(y>H-20){doc.addPage();doc.setFillColor(255,243,250);doc.rect(0,0,W,H,'F');y=16;}
+    if(y>H-22){doc.addPage();doc.setFillColor(255,243,250);doc.rect(0,0,W,H,'F');y=16;}
     doc.setFillColor(i%2===0?245:250,235,255);doc.roundedRect(10,y,W-20,20,6,6,'F');
     doc.setFillColor(155,109,206);doc.circle(24,y+10,7,'F');
-    doc.setTextColor(255,255,255);doc.setFontSize(10);doc.setFont('helvetica','normal');
-    doc.text(m.emoji, 24, y+13, {align:'center'});
-    doc.setTextColor(90,50,160);doc.setFontSize(10);doc.setFont('helvetica','bold');
-    doc.text(m.title, 36, y+8);
-    doc.setTextColor(160,130,200);doc.setFontSize(8);doc.setFont('helvetica','normal');
-    doc.text(m.date.toLocaleDateString('zh-TW')+(m.age?' ・ '+m.age:''), 36, y+16);
+    doc.setTextColor(255,255,255);doc.setFontSize(10);doc.setFont('helvetica','normal');doc.text(m.emoji,24,y+13,{align:'center'});
+    doc.setTextColor(90,50,160);doc.setFontSize(10);doc.setFont('helvetica','bold');doc.text(m.title,36,y+8);
+    doc.setTextColor(160,130,200);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.text(new Date(m.date).toLocaleDateString('zh-TW')+(m.age?'・'+m.age:''),36,y+16);
     y+=26;
   });
 }
-
-function toBase64Img(src, tw, th){
+function toBase64Img(src,tw,th){
   return new Promise((res,rej)=>{
-    const img=new Image(); img.crossOrigin='anonymous';
-    img.onload=()=>{
-      const c=document.createElement('canvas');
-      c.width=tw*2; c.height=th*2;
-      const ctx=c.getContext('2d');
-      ctx.drawImage(img,0,0,c.width,c.height);
-      res(c.toDataURL('image/jpeg',0.82));
-    };
-    img.onerror=()=>rej(new Error('img load fail'));
-    img.src=src;
+    const img=new Image();
+    img.onload=()=>{const c=document.createElement('canvas');c.width=Math.round(tw)*2;c.height=Math.round(th)*2;c.getContext('2d').drawImage(img,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',0.8));};
+    img.onerror=()=>rej(new Error('fail'));img.src=src;
   });
 }
-
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 </script>
 </body>
